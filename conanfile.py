@@ -45,7 +45,10 @@ class LibbsonConan(ConanFile):
             env_build = AutoToolsBuildEnvironment(self, win_bash=self.settings.os == 'Windows')
 
             # compose configure options
-            configure_args = ['--prefix=%s/_inst' % self.build_folder]
+            prefix = os.path.abspath(os.path.join(self.build_folder, "_inst"))
+            if self.settings.os == 'Windows':
+                prefix = tools.unix_path(prefix)
+            configure_args = ['--prefix=%s' % prefix]
             if self.options.shared:
                 configure_args.extend(["--enable-shared", "--disable-static"])
             else:
