@@ -71,6 +71,9 @@ class LibbsonConan(ConanFile):
     def package(self):
         self.copy("copying*", src="sources", dst="licenses", ignore_case=True, keep_path=False)
         self.copy(pattern="*.h", dst="include", src="_inst/include", keep_path=True)
+        # autotools has a bug on mingw: it does not copy bson-stdint.h so copy it manually
+        if self.settings.os == "Windows" and self.settings.compiler != "Visual Studio":
+            self.copy(pattern="bson-stdint.h", dst=os.path.join("include", "libbson-1.0"), src=os.path.join("sources", "build", "cmake", "bson"), keep_path=False)
         if self.options.shared:
             if self.settings.os == "Macos":
                 self.copy(pattern="*.dylib", src="_inst/lib", dst="lib", keep_path=False)
