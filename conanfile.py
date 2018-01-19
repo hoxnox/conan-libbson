@@ -79,6 +79,8 @@ class LibbsonConan(ConanFile):
                 self.copy(pattern="*.dylib", src="_inst/lib", dst="lib", keep_path=False)
             elif self.settings.os == "Windows":
                 self.copy(pattern="*.dll*", src="_inst/bin", dst="bin", keep_path=False)
+                # mingw dll import libraries: libbson*.dll.a
+                self.copy(pattern="*bson*.dll.a", src="_inst/lib", dst="lib", keep_path=False)
             else:
                 self.copy(pattern="*.so*", src="_inst/lib", dst="lib", keep_path=False)
         else:
