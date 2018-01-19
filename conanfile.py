@@ -53,6 +53,7 @@ class LibbsonConan(ConanFile):
                 configure_args.extend(["--enable-shared", "--disable-static"])
             else:
                 configure_args.extend(["--disable-shared", "--enable-static"])
+            configure_args.extend(["--enable-examples=no", "--enable-tests=no"])
 
             with tools.chdir("sources"):
                 # refresh configure
