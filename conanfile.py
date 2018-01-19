@@ -27,7 +27,7 @@ class LibbsonConan(ConanFile):
 
     def build(self):
         # cmake support is still experimental for unix
-        use_cmake = self.settings.os == "Windows"
+        use_cmake = self.settings.compiler == "Visual Studio"
 
         if use_cmake:
             cmake = CMake(self)
@@ -42,18 +42,23 @@ class LibbsonConan(ConanFile):
 
         else:
 
-            env_build = AutoToolsBuildEnvironment(self)
+            env_build = AutoToolsBuildEnvironment(self, win_bash=self.settings.os == 'Windows')
 
             # compose configure options
-            configure_args = ['--prefix=%s/_inst' % self.build_folder]
+            prefix = os.path.abspath(os.path.join(self.build_folder, "_inst"))
+            if self.settings.os == 'Windows':
+                prefix = tools.unix_path(prefix)
+            configure_args = ['--prefix=%s' % prefix]
             if self.options.shared:
                 configure_args.extend(["--enable-shared", "--disable-static"])
             else:
                 configure_args.extend(["--disable-shared", "--enable-static"])
+            configure_args.extend(["--enable-examples=no", "--enable-tests=no"])
 
             with tools.chdir("sources"):
                 # refresh configure
-                self.run('autoreconf --force --verbose --install -I build/autotools')
+                self.run('autoreconf --force --verbose --install -I build/autotools',
+                         win_bash=self.settings.os == 'Windows')
 
                 # disable rpath build
                 tools.replace_in_file("configure", r"-install_name \$rpath/", "-install_name ")
@@ -66,16 +71,21 @@ class LibbsonConan(ConanFile):
     def package(self):
         self.copy("copying*", src="sources", dst="licenses", ignore_case=True, keep_path=False)
         self.copy(pattern="*.h", dst="include", src="_inst/include", keep_path=True)
+        # autotools has a bug on mingw: it does not copy bson-stdint.h so copy it manually
+        if self.settings.os == "Windows" and self.settings.compiler != "Visual Studio":
+            self.copy(pattern="bson-stdint.h", dst=os.path.join("include", "libbson-1.0"), src=os.path.join("sources", "build", "cmake", "bson"), keep_path=False)
         if self.options.shared:
             if self.settings.os == "Macos":
                 self.copy(pattern="*.dylib", src="_inst/lib", dst="lib", keep_path=False)
             elif self.settings.os == "Windows":
                 self.copy(pattern="*.dll*", src="_inst/bin", dst="bin", keep_path=False)
+                # mingw dll import libraries: libbson*.dll.a
+                self.copy(pattern="*bson*.dll.a", src="_inst/lib", dst="lib", keep_path=False)
             else:
                 self.copy(pattern="*.so*", src="_inst/lib", dst="lib", keep_path=False)
         else:
             self.copy(pattern="*bson*.a", src="_inst/lib", dst="lib", keep_path=False, excludes='*dll*')
-        if self.settings.os == "Windows":
+        if self.settings.compiler == "Visual Studio":
             self.copy(pattern="*.lib*", src="_inst/lib", dst="lib", keep_path=False)
 
     def package_info(self):
