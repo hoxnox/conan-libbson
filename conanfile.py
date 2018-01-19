@@ -42,7 +42,7 @@ class LibbsonConan(ConanFile):
 
         else:
 
-            env_build = AutoToolsBuildEnvironment(self)
+            env_build = AutoToolsBuildEnvironment(self, win_bash=self.settings.os == 'Windows')
 
             # compose configure options
             configure_args = ['--prefix=%s/_inst' % self.build_folder]
@@ -53,7 +53,8 @@ class LibbsonConan(ConanFile):
 
             with tools.chdir("sources"):
                 # refresh configure
-                self.run('autoreconf --force --verbose --install -I build/autotools')
+                self.run('autoreconf --force --verbose --install -I build/autotools',
+                         win_bash=self.settings.os == 'Windows')
 
                 # disable rpath build
                 tools.replace_in_file("configure", r"-install_name \$rpath/", "-install_name ")
