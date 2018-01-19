@@ -27,7 +27,7 @@ class LibbsonConan(ConanFile):
 
     def build(self):
         # cmake support is still experimental for unix
-        use_cmake = self.settings.os == "Windows"
+        use_cmake = self.settings.compiler == "Visual Studio"
 
         if use_cmake:
             cmake = CMake(self)
@@ -75,7 +75,7 @@ class LibbsonConan(ConanFile):
                 self.copy(pattern="*.so*", src="_inst/lib", dst="lib", keep_path=False)
         else:
             self.copy(pattern="*bson*.a", src="_inst/lib", dst="lib", keep_path=False, excludes='*dll*')
-        if self.settings.os == "Windows":
+        if self.settings.compiler == "Visual Studio":
             self.copy(pattern="*.lib*", src="_inst/lib", dst="lib", keep_path=False)
 
     def package_info(self):
