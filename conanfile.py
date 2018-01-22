@@ -26,7 +26,7 @@ class LibbsonConan(ConanFile):
         shutil.copy("CMakeLists.txt", "sources/CMakeLists.txt")
 
     def build(self):
-        # cmake support is still experimental for unix
+        # cmake is supported only for Visual Studio
         use_cmake = self.settings.compiler == "Visual Studio"
 
         if use_cmake:
