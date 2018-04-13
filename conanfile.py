@@ -5,7 +5,7 @@ class LibbsonConan(ConanFile):
     name = "libbson"
     version = "1.9.2"
     url = "https://github.com/theirix/conan-libbson"
-    license = "Apache License 2.0 (https://github.com/mongodb/libbson/blob/master/COPYING)"
+    license = "Apache-2.0"
     homepage = "https://github.com/mongodb/libbson"
     description = "A BSON utility library."
     settings = "os", "compiler", "build_type", "arch"
