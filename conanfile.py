@@ -3,7 +3,7 @@ import os, shutil
 
 class LibbsonConan(ConanFile):
     name = "libbson"
-    version = "1.9.2"
+    version = "1.9.4"
     url = "https://github.com/theirix/conan-libbson"
     license = "Apache-2.0"
     homepage = "https://github.com/mongodb/libbson"
