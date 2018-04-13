@@ -13,7 +13,8 @@ class LibbsonConan(ConanFile):
     default_options = "shared=False"
     exports = ["LICENSE.md"]
     exports_sources = ["CMakeLists.txt"]
-    generators = "cmake", "txt"
+    generators = "cmake"
+    source_subfolder = "source_subfolder"
 
     def config_options(self):
         del self.settings.compiler.libcxx
@@ -21,9 +22,11 @@ class LibbsonConan(ConanFile):
     def source(self):
         tools.get("https://github.com/mongodb/libbson/releases/download/%s/libbson-%s.tar.gz"
                   % (self.version, self.version))
-        os.rename("libbson-%s" % self.version, "sources")
-        os.rename("sources/CMakeLists.txt", "sources/CMakeListsOriginal.txt")
-        shutil.copy("CMakeLists.txt", "sources/CMakeLists.txt")
+        os.rename("libbson-%s" % self.version, self.source_subfolder)
+        os.rename(os.path.join(self.source_subfolder, "CMakeLists.txt"),
+                  os.path.join(self.source_subfolder, "CMakeListsOriginal.txt"))
+        shutil.copy("CMakeLists.txt",
+                    os.path.join(self.source_subfolder, "CMakeLists.txt"))
 
     def build(self):
         # cmake is supported only for Visual Studio
@@ -36,7 +39,7 @@ class LibbsonConan(ConanFile):
             cmake.definitions["ENABLE_TESTS"] = False
             cmake.definitions["CMAKE_INSTALL_PREFIX"] = ("%s/_inst" % self.build_folder)
             cmake.verbose = True
-            cmake.configure(source_folder="sources")
+            cmake.configure(source_folder=self.source_subfolder)
             cmake.build()
             cmake.install()
 
@@ -55,7 +58,7 @@ class LibbsonConan(ConanFile):
                 configure_args.extend(["--disable-shared", "--enable-static"])
             configure_args.extend(["--enable-examples=no", "--enable-tests=no"])
 
-            with tools.chdir("sources"):
+            with tools.chdir(self.source_subfolder):
                 # refresh configure
                 self.run('autoreconf --force --verbose --install -I build/autotools',
                          win_bash=self.settings.os == 'Windows')
@@ -69,11 +72,12 @@ class LibbsonConan(ConanFile):
 
 
     def package(self):
-        self.copy("copying*", src="sources", dst="licenses", ignore_case=True, keep_path=False)
+        self.copy("copying*", src=self.source_subfolder, dst="licenses", ignore_case=True, keep_path=False)
         self.copy(pattern="*.h", dst="include", src="_inst/include", keep_path=True)
         # autotools has a bug on mingw: it does not copy bson-stdint.h so copy it manually
         if self.settings.os == "Windows" and self.settings.compiler != "Visual Studio":
-            self.copy(pattern="bson-stdint.h", dst=os.path.join("include", "libbson-1.0"), src=os.path.join("sources", "build", "cmake", "bson"), keep_path=False)
+            self.copy(pattern="bson-stdint.h", dst=os.path.join("include", "libbson-1.0"),
+                      src=os.path.join(self.source_subfolder, "build", "cmake", "bson"), keep_path=False)
         if self.options.shared:
             if self.settings.os == "Macos":
                 self.copy(pattern="*.dylib", src="_inst/lib", dst="lib", keep_path=False)
