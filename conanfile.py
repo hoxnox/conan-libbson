@@ -57,6 +57,13 @@ class LibbsonConan(ConanFile):
                     for filename in fnmatch.filter(filenames, pattern):
                         os.unlink(os.path.join(root, filename))
 
+        if self.settings.compiler == 'Visual Studio' and self.options.shared:
+            # remove msvc dlls copied to bin directory
+            for root, _, filenames in os.walk(os.path.join(self.package_folder, 'bin')):
+                for pattern in ['msvc*.dll']:
+                    for filename in fnmatch.filter(filenames, pattern):
+                        os.unlink(os.path.join(root, filename))
+
     def package_info(self):
         if self.options.shared:
             self.cpp_info.libs = ['bson-1.0']
