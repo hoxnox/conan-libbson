@@ -53,7 +53,7 @@ class LibbsonConan(ConanFile):
                 os.unlink(os.path.join(self.package_folder, 'lib', 'pkgconfig', 'libbson-1.0.pc'))
             # remove shared libraries
             for root, _, filenames in os.walk(self.package_folder):
-                for pattern in ['*.so*', '*.dylib*']:
+                for pattern in ['*.so*', '*.dylib*', '*.dll*']:
                     for filename in fnmatch.filter(filenames, pattern):
                         os.unlink(os.path.join(root, filename))
 
