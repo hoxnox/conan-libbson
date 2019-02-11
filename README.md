@@ -4,7 +4,7 @@
 
 # conan-libbson
 
-[Conan.io](https://conan.io) package for [libbson](https://github.com/mongodb/libbson) library
+[Conan.io](https://conan.io) package for [libbson](https://github.com/mongodb/mongo-c-driver) library
 
 The packages generated with this **conanfile** can be found in [bintray](https://bintray.com/theirix/conan-repo/libbson%3Atheirix).
 
@@ -17,14 +17,14 @@ The packages generated with this **conanfile** can be found in [bintray](https:/
 
 ### Basic setup
 
-    $ conan install libbson/1.9.2@theirix/stable
+    $ conan install libbson/<pkg_version>@theirix/stable
     
 ### Project setup
 
 If you handle multiple dependencies in your project is better to add a *conanfile.txt*
     
     [requires]
-    libbson/1.9.2@theirix/stable
+    libbson/<pkg_version>@theirix/stable
 
     [options]
     libbson:shared=True # false
