@@ -3,7 +3,7 @@ import os, shutil, fnmatch
 
 class LibbsonConan(ConanFile):
     name = "libbson"
-    version = "1.13.1"
+    version = "1.14.0"
     url = "https://github.com/theirix/conan-libbson"
     license = "Apache-2.0"
     homepage = "https://github.com/mongodb/mongo-c-driver"
