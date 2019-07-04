@@ -20,8 +20,9 @@ class LibbsonConan(ConanFile):
         del self.settings.compiler.libcxx
 
     def source(self):
+        checksum = "ebe9694f7fa6477e594f19507877bbaa0b72747682541cf0cf9a6c29187e97e8"
         tools.get("https://github.com/mongodb/mongo-c-driver/releases/download/%s/mongo-c-driver-%s.tar.gz"
-                  % (self.version, self.version))
+                  % (self.version, self.version), sha256=checksum)
         os.rename("mongo-c-driver-%s" % self.version, self.source_subfolder)
         os.rename(os.path.join(self.source_subfolder, "CMakeLists.txt"),
                   os.path.join(self.source_subfolder, "CMakeListsOriginal.txt"))
