@@ -1,5 +1,5 @@
-from conans import ConanFile, AutoToolsBuildEnvironment, CMake, tools
 import os, shutil, fnmatch
+from conans import ConanFile, CMake, tools
 
 class LibbsonConan(ConanFile):
     name = "libbson"
