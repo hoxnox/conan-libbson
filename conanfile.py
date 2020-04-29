@@ -47,6 +47,8 @@ class LibbsonConan(ConanFile):
 
     def package(self):
         self.copy("copying*", src=self.source_subfolder, dst="licenses", ignore_case=True, keep_path=False)
+        # do not package docs
+        tools.rmdir(os.path.join(self.package_folder, 'share'))
 
         if not self.options.shared:
             # remove configs for shared libraries
