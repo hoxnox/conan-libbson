@@ -3,7 +3,7 @@ import os, shutil, fnmatch
 
 class LibbsonConan(ConanFile):
     name = "libbson"
-    version = "1.14.0"
+    version = "1.16.2"
     url = "https://github.com/theirix/conan-libbson"
     license = "Apache-2.0"
     homepage = "https://github.com/mongodb/mongo-c-driver"
@@ -20,7 +20,7 @@ class LibbsonConan(ConanFile):
         del self.settings.compiler.libcxx
 
     def source(self):
-        checksum = "ebe9694f7fa6477e594f19507877bbaa0b72747682541cf0cf9a6c29187e97e8"
+        checksum = "0a722180e5b5c86c415b9256d753b2d5552901dc5d95c9f022072c3cd336887e"
         tools.get("https://github.com/mongodb/mongo-c-driver/releases/download/%s/mongo-c-driver-%s.tar.gz"
                   % (self.version, self.version), sha256=checksum)
         os.rename("mongo-c-driver-%s" % self.version, self.source_subfolder)
