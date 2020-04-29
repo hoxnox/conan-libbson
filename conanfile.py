@@ -8,6 +8,7 @@ class LibbsonConan(ConanFile):
     license = "Apache-2.0"
     homepage = "https://github.com/mongodb/mongo-c-driver"
     description = "A BSON utility library."
+    topics = ("bson")
     settings = "os", "compiler", "build_type", "arch"
     options = {"shared": [True, False]}
     default_options = {"shared": False}
